@@ -3,7 +3,6 @@ import { ADD_TO_CART, REMOVE_ITEM_CART, UPDATE_TO_CART, SAVE_SHIPPING_INFO } fro
 
 export const addItemToCart = (id, qty, uid) => async (dispatch, getState) => {
     const { data } = await axios.get(`/api/product/${id}`)
-    console.log(data.data);
     dispatch({
         type: ADD_TO_CART,
         payload: {
@@ -12,7 +11,7 @@ export const addItemToCart = (id, qty, uid) => async (dispatch, getState) => {
             price: data.data.product_price,
             image: data.data.imageDTOS[0].imageLink,
             quantity: data.data.product_qty,
-            qty
+            qty: qty > data.data.product_qty ? data.data.product_qty : qty
         }
     })
 
@@ -21,7 +20,6 @@ export const addItemToCart = (id, qty, uid) => async (dispatch, getState) => {
 
 export const updateItemToCart = (id, qty, uid) => async (dispatch, getState) => {
     const { data } = await axios.get(`/api/product/${id}`)
-
     dispatch({
         type: UPDATE_TO_CART,
         payload: {

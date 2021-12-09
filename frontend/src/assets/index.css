@@ -711,6 +711,7 @@ footer ul li {
 /* all products */
 .product-item {
     transition: transform 0.5s;
+    margin-top: 16px;
 }
 .product-item:hover {
     transform: translateY(-5px);

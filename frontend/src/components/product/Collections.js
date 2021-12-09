@@ -11,11 +11,11 @@ import Pagination from "react-js-pagination"
 import { getCategoryDetailsById } from '../../actions/categoryActions'
 import { getBrandDetailsById } from '../../actions/brandActions'
 
-const Collections = ({ match }) => {
+const Collections = ({ match, history }) => {
     const dispatch = useDispatch()
     const alert = useAlert()
     const [currentPage, setCurrentPage] = useState(1)
-    const [rating, setRating] = useState(0)
+    const [noOfElement, setNoOfElement] = useState(8)
     const { brand } = useSelector(state => state.brandDetails)
     const { category } = useSelector(state => state.categoryDetails)
     const { loading, products, error, productsCount, resPerPage, filteredProductsCount } = useSelector(state => state.products)
@@ -43,9 +43,16 @@ const Collections = ({ match }) => {
     }
 
     let count = productsCount
+    const loadMore = () => {
+        setNoOfElement(noOfElement + noOfElement);
+    };
+
     if (filteredProductsCount <= productsCount && currentPage === 1) {
         count = filteredProductsCount
     }
+    const isCheckEndOfPage = noOfElement >= productsCount ? true : false;
+    const slice = products.slice(0, noOfElement);
+
     return (
         <Fragment>
             <MetaData title={'Shop'} />
@@ -61,7 +68,7 @@ const Collections = ({ match }) => {
                         loading ? <Loader /> : (
                             <>
                                 <div className="row">
-                                    <Fragment>
+                                    {/* <Fragment>
                                         <div className="col-3">
                                             <div className="banner">
                                                 {
@@ -107,21 +114,21 @@ const Collections = ({ match }) => {
 
                                             </div>
                                         </div>
-                                    </Fragment>
+                                    </Fragment> */}
 
                                     <Fragment>
-                                        <div className="col-9">
+                                        <div className="col-12">
                                             <div className="row">
                                                 {
                                                     filteredProductsCount === 0 ? (
-                                                        <div className="col-9">
+                                                        <div className="col-12">
                                                             <h3 className="empty">Products is empty</h3>
                                                         </div>
                                                     ) : (
                                                         <>
                                                             {
-                                                                products && products.map(product => (
-                                                                    <Product product={product} col={4} key={product._id} />
+                                                                slice && slice.map(product => (
+                                                                    <Product product={product} col={3} history={history} />
                                                                 ))
                                                             }
                                                         </>
@@ -129,7 +136,7 @@ const Collections = ({ match }) => {
                                                 }
 
                                             </div>
-                                            {
+                                            {/* {
                                                 resPerPage <= count && (
 
                                                     <div className="product-pagination">
@@ -147,8 +154,15 @@ const Collections = ({ match }) => {
                                                         />
                                                     </div>
                                                 )
-                                            }
+                                            } */}
                                         </div>
+                                        <button
+                                        className="btn btn-block btn-outline-dark"
+                                        onClick={() => loadMore()}
+                                        hidden={isCheckEndOfPage}
+                                    >
+                                        Load More
+                                    </button>
                                     </Fragment>
                                 </div>
 

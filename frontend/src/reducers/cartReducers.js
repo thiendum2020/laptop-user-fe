@@ -13,10 +13,13 @@ export const cartReducer = (state = { cartItems: [], shippingInfo: {} }, action)
                     if (i.product_id === isItemExist.product_id) {
 
                         i.qty = i.qty + item.qty
-
+                        if(i.qty > item.quantity) {
+                            i.qty = item.quantity
+                        }
+                        console.log(i.qty);
                     }
                 })
-
+                console.log(state.cartItems);
                 return {
                     ...state,
                     cartItems: state.cartItems

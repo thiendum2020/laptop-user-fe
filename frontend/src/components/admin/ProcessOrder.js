@@ -9,7 +9,7 @@ import NumberFormat from 'react-number-format'
 
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
-import { getOrderDetails, updateOrderByAdmin, updateStatusOrder, undoStockProduct, clearErrors } from '../../actions/orderActions'
+import { getOrderDetails, updateOrderByAdmin, cancelOrder, undoStockProduct, clearErrors } from '../../actions/orderActions'
 import { UPDATE_ORDER_RESET } from '../../constants/orderConstants'
 
 const ProcessOrder = ({ match }) => {
@@ -90,7 +90,7 @@ const ProcessOrder = ({ match }) => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    dispatch(updateStatusOrder(match.params.id, status))
+                    dispatch(cancelOrder(match.params.id, status))
                     swal("Poof! Your imaginary file has been deleted!", {
                         icon: "success",
                     })

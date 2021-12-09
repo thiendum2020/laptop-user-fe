@@ -22,24 +22,37 @@ export const login = (username, password) => async (dispatch) => {
 
         dispatch({ type: LOGIN_REQUEST })
 
-        const config = {
+        const config1 = {
             headers: {
                 'Content-Type': 'application/json'
             }
         }
+        
+        const { data } = await axios.post('/api/auth/signin', { username, password }, config1)
 
-        const { data } = await axios.post('/api/auth/signin', { username, password }, config)
-
-        dispatch({
-            type: LOGIN_SUCCESS,
-            payload: data
-        })
-
-        dispatch({
-            type: CART_IMPORT,
-            payload: JSON.parse(localStorage.getItem(data.id))
-        })
-        localStorage.setItem('userLogin', JSON.stringify(data))
+        const config2 = {
+            headers: {
+                Authorization: `Bearer ${data.accessToken}`
+            }
+        };
+        const userActive = await axios.get(`/api/user/find/${data.id}`, config2)
+        if(userActive.data.activestatus === 'Active'){
+            dispatch({
+                type: LOGIN_SUCCESS,
+                payload: data
+            })
+    
+            dispatch({
+                type: CART_IMPORT,
+                payload: JSON.parse(localStorage.getItem(data.id))
+            })
+            localStorage.setItem('userLogin', JSON.stringify(data))
+        } else {
+            dispatch({
+                type: LOGIN_FAIL,
+                payload: 'Your account has been locked',
+            })
+        }
 
     } catch (error) {
         dispatch({
@@ -50,7 +63,7 @@ export const login = (username, password) => async (dispatch) => {
 }
 
 // Register user
-export const register = (name, email, password, avatar) => async (dispatch) => {
+export const register = (username, email, password, phone, address, role) => async (dispatch) => {
     try {
 
         dispatch({ type: REGISTER_USER_REQUEST })
@@ -61,7 +74,7 @@ export const register = (name, email, password, avatar) => async (dispatch) => {
             }
         }
 
-        const { data } = await axios.post('/api/register', { name, email, password, avatar }, config)
+        const { data } = await axios.post('/api/auth/signup', { username, email, password, phone, address, role }, config)
 
         dispatch({
             type: REGISTER_USER_SUCCESS,

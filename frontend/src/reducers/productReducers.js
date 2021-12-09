@@ -45,17 +45,22 @@ import {
     DELETE_REVIEW_RESET,
     DELETE_REVIEW_FAIL,
     CLEAR_ERRORS,
+    SEARCH_PRODUCTS_REQUEST,
+    SEARCH_PRODUCTS_SUCCESS,
+    SEARCH_PRODUCTS_FAIL,
 } from '../constants/productConstants'
 
 export const productsReducer = (state = { products: [] }, action) => {
     switch (action.type) {
         case ALL_PRODUCTS_REQUEST:
+        case SEARCH_PRODUCTS_REQUEST:
         case ADMIN_PRODUCTS_REQUEST:
             return {
                 loading: true,
                 products: []
             }
         case ALL_PRODUCTS_SUCCESS:
+        case SEARCH_PRODUCTS_SUCCESS:
             return {
                 loading: false,
                 products: action.payload.data,
@@ -70,6 +75,7 @@ export const productsReducer = (state = { products: [] }, action) => {
             }
 
         case ALL_PRODUCTS_FAIL:
+        case SEARCH_PRODUCTS_FAIL:
         case ADMIN_PRODUCTS_FAIL:
             return {
                 loading: false,

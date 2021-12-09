@@ -56,13 +56,15 @@ const MyListOrders = () => {
             ],
             rows: []
         }
-
+        orders && orders.sort(function (a, b) {
+            return b.id-a.id;
+        })
         orders && orders.forEach(order => {
             data.rows.push({
                 id: order.id,
                 createdAt: String(order.ngaydat),
                 amount: <NumberFormat value={order.total_price} displayType={'text'} thousandSeparator={true} prefix={'đ '} />,
-                status: order.status && String(order.status).includes('Đang vận chuyển')
+                status: order.status && String(order.status).includes('Đang giao')
                     ? <p style={{ color: 'blue' }}>{order.status}</p>
                     : order.status && String(order.status).includes('Đã hủy')
                         ? <p style={{ color: 'red' }}>{order.status}</p>

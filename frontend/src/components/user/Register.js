@@ -1,83 +1,56 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { Fragment, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-import Loader from '../layouts/Loader'
-import MetaData from '../layouts/MetaData'
-import Banner from '../../assets/banner.jpg'
-import { useAlert } from 'react-alert'
-import { useDispatch, useSelector } from 'react-redux'
-import { register, clearErrors } from '../../actions/userActions'
-import axios from 'axios'
+import Loader from "../layouts/Loader";
+import MetaData from "../layouts/MetaData";
+import Banner from "../../assets/banner.jpg";
+import { useAlert } from "react-alert";
+import { useDispatch, useSelector } from "react-redux";
+import { register, clearErrors } from "../../actions/userActions";
+import axios from "axios";
 
 const Register = ({ history }) => {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [avatar, setAvatar] = useState('')
-    const [avatarPreview, setAvatarPreview] = useState('/images/default_avatar.jpg')
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
+    const [role, setRole] = useState("user");
 
-    const alert = useAlert()
-    const dispatch = useDispatch()
+    const alert = useAlert();
+    const dispatch = useDispatch();
 
-    const { isAuthenticated, error, loading } = useSelector(state => state.auth)
+    const { isAuthenticated, error, loading, success } = useSelector((state) => state.auth);
 
     useEffect(() => {
-
         if (isAuthenticated) {
-            history.push('/')
+            history.push("/");
         }
 
         if (error) {
-            alert.error(error)
-            dispatch(clearErrors())
+            alert.error("Registration failed. Please check the information again!");
+            dispatch(clearErrors());
         }
-
-    }, [dispatch, alert, isAuthenticated, error, history])
-
-    const submitHandler = e => {
-        e.preventDefault()
-
-        dispatch(register(name, email, password, avatar))
-    }
-
-    const onChangeAvatar = async e => {
-        const file = e.target.files[0]
-        if (!file) {
-            return alert.error('File not exist!')
+        if(success){
+            alert.success("Register successfully");
+            dispatch(clearErrors());
+            history.push("/login");
         }
-        if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
-            return alert.error('File format is incorrect!')
-        }
-        if (file.size > 1024 * 1024 * 5) {
-            return alert.error('File too large!')
-        }
+    }, [dispatch, alert, isAuthenticated, error, history, success]);
 
-        let formData = new FormData()
-        formData.append('file', file)
+    const submitHandler = (e) => {
+        e.preventDefault();
 
-        const res = await axios.post('/api/upload', formData, {
-            headers: { 'content-type': 'multipart/form-data' }
-        })
-        setAvatar(res.data)
-        const reader = new FileReader()
-        reader.onload = () => {
-            if (reader.readyState === 2) {
-                setAvatarPreview(reader.result)
-            }
-        }
-        reader.readAsDataURL(e.target.files[0])
-    }
-
-    const deleteImageHandler = async () => {
-        setAvatarPreview('/images/default_avatar.jpg')
-        setAvatar('')
-    }
+        dispatch(register(username, email, password, phone, address, role));
+    };
 
     return (
         <Fragment>
-            {loading ? <Loader /> : (
+            {loading ? (
+                <Loader />
+            ) : (
                 <Fragment>
-                    <MetaData title={'Register'} />
+                    <MetaData title={"Register"} />
                     <section className="account">
                         <div className="container">
                             <div className="row">
@@ -87,89 +60,78 @@ const Register = ({ history }) => {
                                 <div className="col-6">
                                     <div className="account-form">
                                         <div className="form-header">
-                                            <span><Link to="/login">Login</Link></span>
+                                            <span>
+                                                <Link to="/login">Login</Link>
+                                            </span>
                                             <div className="register">
                                                 <span>Register</span>
                                             </div>
                                         </div>
                                         <form onSubmit={submitHandler}>
-
-                                            <label htmlFor="name_field">Name</label>
                                             <input
                                                 type="text"
                                                 id="name_field"
                                                 className="form-control"
-                                                name='name'
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                                placeholder="Name" />
-
-                                            <label htmlFor="email_field">Email</label>
+                                                name="name"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                placeholder="Name"
+                                            />
                                             <input
                                                 type="email"
                                                 id="email_field"
                                                 className="form-control"
-                                                name='email'
+                                                name="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                placeholder="Email" />
-
-                                            <label htmlFor="password_field">Password</label>
+                                                placeholder="example@domain.com"
+                                            />
                                             <input
                                                 type="password"
                                                 id="password_field"
                                                 className="form-control"
-                                                name='password'
+                                                name="password"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
-                                                placeholder="Password" />
-
-                                            <div className='form-group'>
-                                                <div className='avatar-upload align-items-center'>
-                                                    <div>
-                                                        <figure className='avatar mr-3 item-rtl'>
-                                                            <img
-                                                                src={avatarPreview}
-                                                                className='rounded-circle'
-                                                                alt='Avatar Preview' />
-                                                            <span onClick={deleteImageHandler}>X</span>
-                                                        </figure>
-                                                    </div>
-                                                    <div className='custom-file'>
-                                                        <input
-                                                            type='file'
-                                                            name='avatar'
-                                                            className='custom-file-input'
-                                                            id='customFile'
-                                                            accept="images/*"
-                                                            onChange={onChangeAvatar}
-                                                        />
-                                                        <label className='custom-file-label' htmlFor='customFile'>
-                                                            Choose Avatar
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                placeholder="Password"
+                                            />
+                                            <input
+                                                type="number"
+                                                id="name_field"
+                                                className="form-control"
+                                                name="name"
+                                                value={phone}
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                placeholder="Phone Number"
+                                            />
+                                            <input
+                                                type="text"
+                                                id="name_field"
+                                                className="form-control"
+                                                name="name"
+                                                value={address}
+                                                onChange={(e) => setAddress(e.target.value)}
+                                                placeholder="Address"
+                                            />
 
                                             <button
                                                 id="register_button"
                                                 type="submit"
                                                 className="btn btn-login"
-                                                disabled={loading ? true : false}>
+                                                disabled={loading ? true : false}
+                                            >
                                                 REGISTER
                                             </button>
-
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
-                </Fragment >
-            )
-            }
-        </Fragment >
-    )
-}
+                </Fragment>
+            )}
+        </Fragment>
+    );
+};
 
-export default Register
+export default Register;

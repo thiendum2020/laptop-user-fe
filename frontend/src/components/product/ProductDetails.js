@@ -40,7 +40,6 @@ const ProductDetails = ({ match, history }) => {
     const { category } = useSelector(state => state.categoryDetails)
     const { userLogin } = useSelector(state => state.auth)
     const uid = userLogin ? userLogin.id : null
-    console.log(uid);
     useEffect(() => {
         dispatch(getProductDetails(match.params.id))
         dispatch(getBrandDetailsById(product.brand_id))
@@ -85,8 +84,19 @@ const ProductDetails = ({ match, history }) => {
     const addToCart = () => {
 
         if (uid) {
-            dispatch(addItemToCart(match.params.id, qty, uid))
-            alert.success('Item Added to Cart')
+            if(qty > product.product_qty){
+                alert.error('The quantity you entered is over the limit!')
+                setQty(1)
+                return 
+            } else if(qty < 1 || !qty) {
+                alert.error('The quantity you entered is not valid!')
+                setQty(1)
+                return 
+            }
+            else {
+                dispatch(addItemToCart(match.params.id, qty, uid))
+                alert.success('Item Added to Cart')
+            }
         }
         else {
             history.push('/login')
@@ -214,7 +224,7 @@ const ProductDetails = ({ match, history }) => {
                                                                 <span className="product-quantity-btn" onClick={decreaseQty}>
                                                                     <i className="bx bx-minus"></i>
                                                                 </span>
-                                                                <input type="number" className="product-quantity" value={qty} readOnly />
+                                                                <input type="number" className="product-quantity" value={qty} onChange={(e) => setQty(e.target.value)} />
                                                                 <span className="product-quantity-btn" onClick={increaseQty}>
                                                                     <i className="bx bx-plus"></i>
                                                                 </span>

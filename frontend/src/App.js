@@ -89,7 +89,7 @@ function App() {
                 <ProtectedRoute path="/profile/order/:id" component={OrderDetails} exact />
                 <ProtectedRoute path="/profile/password/update" component={UpdatePassword} exact />
 
-                <ProtectedRoute path="/admin/dashboard" isAdmin={true} component={Dashboard} exact />
+                {/* <ProtectedRoute path="/admin/dashboard" isAdmin={true} component={Dashboard} exact />
                 <ProtectedRoute path="/admin/users" isAdmin={true} component={UsersList} exact />
                 <ProtectedRoute path="/admin/user/:id" isAdmin={true} component={UpdateUser} exact />
                 <ProtectedRoute path="/admin/products" isAdmin={true} component={ProductsList} exact />
@@ -110,7 +110,7 @@ function App() {
                 <ProtectedRoute path="/admin/receipts" isAdmin={true} component={ReceiptList} exact />
                 <ProtectedRoute path="/admin/receipt/:id" isAdmin={true} component={ReceiptDetails} exact />
                 <ProtectedRoute path="/admin/receipts/import" isAdmin={true} component={ImportReceiptItems} exact />
-                <ProtectedRoute path="/admin/receipts/confirm" isAdmin={true} component={ConfirmReceipt} exact />
+                <ProtectedRoute path="/admin/receipts/confirm" isAdmin={true} component={ConfirmReceipt} exact /> */}
                 <Footer />
 
             </Router>

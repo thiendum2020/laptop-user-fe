@@ -89,9 +89,15 @@ const Payment = ({ history }) => {
                     <form className="shadow-lg" onSubmit={submitHandler}>
                         <h1 className="mb-4">Select Payment Method</h1>
                         <div className="form-check">
-                            <input className="form-check-input" type="radio" name="Ship COD" id="ship_cod" defaultChecked />
+                            <input className="form-check-input" type="radio" name="Ship COD" id="ship_cod" />
                             <label className="form-check-label" htmlFor="flexRadioDefault1">
                                 Ship COD
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <input className="form-check-input" type="radio" name="PayPal Payment" id="paypal" />
+                            <label className="form-check-label" htmlFor="flexRadioDefault1">
+                                PayPal Payment
                             </label>
                         </div>
                         <div className="form-check">

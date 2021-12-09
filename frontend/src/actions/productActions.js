@@ -41,6 +41,9 @@ import {
     DELETE_REVIEW_RESET,
     DELETE_REVIEW_FAIL,
     CLEAR_ERRORS,
+    SEARCH_PRODUCTS_REQUEST,
+    SEARCH_PRODUCTS_SUCCESS,
+    SEARCH_PRODUCTS_FAIL,
 } from '../constants/productConstants'
 
 import axios from 'axios'
@@ -90,6 +93,26 @@ export const getFeaturedProducts = () => async (dispatch) => {
         dispatch({
             type: PRODUCT_FEATURED_FAIL,
             payload: error.response.data.message,
+        })
+    }
+}
+export const searchProducts = (searchText) => async (dispatch) => {
+    try {
+        dispatch({ type: SEARCH_PRODUCTS_REQUEST })
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        const { data } = await axios.post('/api/product/search', {searchText}, config)
+        dispatch({
+            type: SEARCH_PRODUCTS_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        dispatch({
+            type: SEARCH_PRODUCTS_FAIL,
+            payload: error.response.data.message
         })
     }
 }
@@ -146,16 +169,17 @@ export const getHotProductsByAdmin = (dateFrom, dateTo) => async (dispatch) => {
 export const getProductCollections = (currentPage = 1, collections, collection) => async (dispatch) => {
     try {
         dispatch({ type: ALL_PRODUCTS_REQUEST })
-        let link = `/api/product?page=${currentPage}`
+        // let link = `/api/product?page=${currentPage}`
+        let link = ''
         if (collections === 'brand') {
-            const { data } = await axios.get(`/api/brand/name/${collection}`)
-            link = `/api/products?page=${currentPage}&brand=${data.brand[0]._id}`
+            // const { data } = await axios.get(`/api/brand/name/${collection}`)
+            // link = `/api/products?page=${currentPage}&brand=${data.brand[0]._id}`
+            link = `/api/product/brand/${collection}`
         }
         if (collections === 'category') {
-            const { data } = await axios.get(`/api/category/name/${collection}`)
-            console.log(data);
-
-            link = `/api/products?page=${currentPage}&category=${data.category[0]._id}`
+            // const { data } = await axios.get(`/api/category/name/${collection}`)
+            // link = `/api/products?page=${currentPage}&category=${data.category[0]._id}`
+            link = `/api/product/cate/${collection}`
         }
         const { data } = await axios.get(link)
         dispatch({
